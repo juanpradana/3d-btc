@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+/* Tailwind v4: tema via CSS @theme (tailwind.config.js tidak otomatis dibaca) */
+@theme {
+  /* Palette finansial pro (bid green / ask red) */
+  --color-bid-50: #ecfdf5;
+  --color-bid-100: #d1fae5;
+  --color-bid-300: #6ee7b7;
+  --color-bid-400: #34d399;
+  --color-bid-500: #10b981;
+  --color-bid-600: #059669;
+  --color-bid-700: #047857;
+  --color-bid-800: #065f46;
+  --color-bid-900: #064e3b;
+  --color-bid-950: #022c22;
+
+  --color-ask-50: #fef2f2;
+  --color-ask-100: #fee2e2;
+  --color-ask-300: #fca5a5;
+  --color-ask-400: #f87171;
+  --color-ask-500: #ef4444;
+  --color-ask-600: #dc2626;
+  --color-ask-700: #b91c1c;
+  --color-ask-800: #991b1b;
+  --color-ask-900: #7f1d1d;
+  --color-ask-950: #450a0a;
+
+  --color-accent-50: #f0f9ff;
+  --color-accent-100: #e0f2fe;
+  --color-accent-300: #7dd3fc;
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+  --color-accent-700: #0369a1;
+  --color-accent-800: #075985;
+  --color-accent-900: #0c4a6e;
+  --color-accent-950: #082f49;
+
+  --color-glass-light: rgba(255, 255, 255, 0.08);
+  --color-glass-dark: rgba(10, 10, 12, 0.6);
+
+  --font-mono:
+    "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+  --font-display: "Inter", "Segoe UI", sans-serif;
+
+  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.35);
+  --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.35);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-glass-lg: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  --animate-pulse-glow: pulse-glow 2.5s ease-in-out infinite;
+  --animate-float-up: float-up 3s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-slide-right: slide-right 0.3s ease-out;
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+    50% {
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.65);
+    }
+  }
+  @keyframes float-up {
+    0% {
+      transform: translateY(0px);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-120px);
+      opacity: 0;
+    }
+  }
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes slide-up {
+    0% {
+      transform: translateY(8px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0px);
+      opacity: 1;
+    }
+  }
+  @keyframes slide-right {
+    0% {
+      transform: translateX(-8px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0px);
+      opacity: 1;
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+/*
+ * PENTING: reset ini WAJIB berada di dalam @layer base.
+ * CSS tanpa layer menang atas semua yang ada di dalam @layer (termasuk
+ * utilities Tailwind). Tanpa @layer, `padding: 0` di sini akan menimpa
+ * SETIAP utility p-*, px-*, py-*, pt-*, pb-* dan margin di seluruh aplikasi.
+ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050507;
+  }
+
+  body {
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica Neue,
+      Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #e8e8ea;
+    line-height: 1.4;
+  }
+}
+
+/* Selection */
+::selection {
+  background: rgba(16, 185, 129, 0.35);
+  color: #ecfdf5;
+}
+
+/* Fokus aksesibilitas */
+*:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Panel glassmorphism (utility dipakai HUD; tidak ada di Tailwind core) */
+@utility glass-panel {
+  background: rgba(10, 12, 16, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Cockpit Glass System - Unified design tokens for the tactical terminal */
+@utility cockpit-panel {
+  background: rgba(8, 12, 18, 0.82);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+@utility cockpit-card {
+  background: rgba(13, 18, 25, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.625rem;
+}
+
+@utility cockpit-header {
+  background: linear-gradient(180deg, rgba(10, 15, 22, 0.94) 0%, rgba(6, 10, 15, 0.88) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility cockpit-footer {
+  background: linear-gradient(0deg, rgba(6, 10, 15, 0.94) 0%, rgba(10, 15, 22, 0.82) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Safe area insets for notched devices */
+@utility safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility safe-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+@utility safe-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Sleek 5px scrollbar for panels with Firefox thin support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

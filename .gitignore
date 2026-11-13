@@ -1,0 +1,34 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Rust build artifacts (Cargo.lock sengaja TIDAK diabaikan: ini aplikasi,
+# bukan library — lockfile wajib di-commit agar build Docker reproducible)
+target/
+
+# Test artifacts & MCP scratchpad
+*.png
+.playwright-mcp/
+.claude-flow/
+todo.md
