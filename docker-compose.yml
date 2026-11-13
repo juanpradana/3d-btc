@@ -15,6 +15,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    # Bergabung ke network reverse-proxy host agar kontainer nginx (pdf-utility-proxy)
+    # dapat melayani https://btc.farzani.my.id lewat DNS name: http://btc-3d-anima:80
+    networks:
+      - default
+      - pdf-internal
     deploy:
       resources:
         limits:
@@ -30,3 +35,10 @@ services:
         max-file: "3"
     environment:
       - NODE_ENV=production
+
+networks:
+  # Network internal milik reverse proxy lain di host yang sama (dibuat sebelumnya).
+  # Ditandai external agar compose tidak memutus/membuat ulang network yang sedang dipakai.
+  pdf-internal:
+    external: true
+    name: pdf-utility_pdf-internal
