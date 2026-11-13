@@ -1,8 +1,12 @@
 # BTC/USDT 3D Real-Time Order Flow & Macro Topography
 
+> 🌐 **Live Production**: [https://btc.farzani.my.id](https://btc.farzani.my.id)
+
 Visualisasi 3D real-time interaktif kedalaman pasar (order book) dan aliran pesanan agresif (order flow) Bitcoin (BTC/USDT) bertenaga **Rust → WebAssembly (WASM)** langsung di browser dengan biaya server **nol (zero server cost)**.
 
 Aplikasi terhubung langsung ke public data mirror resmi **Binance Vision** (`data-api.binance.vision` dan `data-stream.binance.vision`) tanpa memerlukan API Key, VPN, maupun proxy tambahan, sehingga dapat diakses secara global dan bebas blokir regional.
+
+Demo aktif dapat langsung dicoba di **[btc.farzani.my.id](https://btc.farzani.my.id)**.
 
 ---
 
@@ -114,6 +118,54 @@ ingress:
     service: http://localhost:3857
   - service: http_status:404
 ```
+
+### Contoh Nyata: Deployment di `btc.farzani.my.id` (Server Ubuntu + Nginx `web-proxy`)
+
+Server di `43.173.40.121` menggunakan pola **standalone host-port + reverse proxy terpisah** (container `web-proxy` di `/home/ubuntu/web-proxy/`). Container aplikasi **tidak** join network proxy, hanya mem-publish port host `3857`:
+
+```bash
+# 1. Clone & jalankan standalone (tanpa butuh stack lain)
+git clone https://github.com/juanpradana/3d-btc.git
+cd 3d-btc
+docker compose up -d --build   # publish 0.0.0.0:3857→80
+```
+
+```nginx
+# 2. /home/ubuntu/web-proxy/nginx/conf.d/btc.farzani.my.id.conf
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name btc.farzani.my.id;
+
+    ssl_certificate     /etc/nginx/ssl/server.crt;
+    ssl_certificate_key /etc/nginx/ssl/server.key;
+
+    # ... security headers ...
+
+    location / {
+        # Routing lewat host gateway (bukan Docker network!)
+        proxy_pass http://host.docker.internal:3857;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+```bash
+# 3. Reload proxy
+docker exec web-proxy nginx -s reload
+```
+
+Kelebihan pola ini:
+- ✅ Aplikasi **100% standalone** — `docker compose up` jalan di mana saja tanpa dependency eksternal
+- ✅ Reverse proxy terpisah (`web-proxy`) bisa di-*update* tanpa restart aplikasi
+- ✅ Pola yang sama dipakai untuk `bdlcctv.farzani.my.id` (port 3447), `pdf.farzani.my.id` (port 3001)
 
 ---
 
