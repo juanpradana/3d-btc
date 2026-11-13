@@ -1,4 +1,4 @@
-# BTC/USDT 3D Real-Time Order Flow & Market Battlefield
+# BTC/USDT 3D Real-Time Order Flow & Macro Topography
 
 Visualisasi 3D real-time interaktif kedalaman pasar (order book) dan aliran pesanan agresif (order flow) Bitcoin (BTC/USDT) bertenaga **Rust → WebAssembly (WASM)** langsung di browser dengan biaya server **nol (zero server cost)**.
 
@@ -13,15 +13,18 @@ Aplikasi terhubung langsung ke public data mirror resmi **Binance Vision** (`dat
   - **Micro-Price (Stoikov-Manley)**: Harga kesetimbangan berbobot volume order book di dalam rentang *bid-ask spread*.
   - **CVD (Cumulative Volume Delta) Rolling Window (2 Menit)**: Agregasi volume agresif buy vs sell yang akurat menggunakan timestamp eksekusi bursa (`T`).
   - **Direction Score (-1 .. +1) & Confidence Index (0 .. 100%)**: Skoring kuantitatif sentimen pasar secara real-time.
-- **Dua Mode Visualisasi 3D Taktis**:
-  - ⚔️ **Battlefield Mode**: Garis depan (*frontline*) perang buy vs sell dengan animasi proyektil aliran order flow, lantai kisi siber, dan pilar volume kristal.
-  - 🗺️ **Open Maps Mode**: Peta topografi kedalaman pasar dengan kompas taktis hologram dan palet sentimen dinamis (Bullish hijau, Bearish merah, Neutral biru/ungu).
+- **Mode Visualisasi 3D Taktis — Macro Topography (Open Maps)**:
+  - Peta topografi kedalaman pasar dari *bird's-eye* dengan kamera atas 20 level order book.
+  - Aliran partikel order flow **seamless & tak terbatas** (800 partikel) dengan fade halus di batas panggung — tanpa garis patah.
+  - *Whale wall* sonar halo (amber) pada limit order besar (≥1.5× volume rata-rata buku).
+  - Kontur topografi berlapis, penanda level kedalaman −20..+20, dan kompas taktis hologram.
+  - Palet sentimen dinamis (Bullish hijau, Bearish rose, Neutral teal/orange).
 - **Zero Memory Leak & 60 FPS Stabil**:
   - Buffer partikel GPU dialokasikan sekali saat inisialisasi (`Float32Array`), dimutasi *in-place* di `useFrame` tanpa memicu garbage collector.
   - Geometri pilar menggunakan unit box terukur skala (*scaled unit geometry*) untuk mencegah pembuatan ulang buffer WebGL.
   - Batching 100ms sinkron antara WebAssembly dan pembaruan antarmuka React.
 - **Responsif di Seluruh Viewport**:
-  - Kontrol mode dan metrik dapat diakses di mobile portrait, mobile landscape, tablet, hingga desktop ultrawide.
+  - Panel telemetri, order book ladder, dan hud status dapat diakses di mobile portrait, mobile landscape, tablet, sampai desktop ultrawide.
   - FOV dan jarak kamera dinamis mengikuti rasio aspek layar browser.
 - **Fallback Simulator Otomatis**:
   - Bila jaringan offline atau terputus, simulator pasar sintetis langsung aktif secara mulus dan beralih kembali ke feed live saat koneksi pulih.

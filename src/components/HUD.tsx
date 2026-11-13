@@ -7,19 +7,17 @@ import MobileCockpitSheet from "./hud/MobileCockpitSheet";
 
 export interface HUDProps {
   state: AppAnalyticsState;
-  mode?: "battlefield" | "openmaps";
-  onModeChange?: (mode: "battlefield" | "openmaps") => void;
 }
 
 /**
  * Unified Tactical Cyber-Cockpit Orchestrator
  * Fully proportional, responsive layout with dual-dock symmetry and seamless mobile parity.
  */
-export default function HUD({ state, mode = "battlefield", onModeChange }: HUDProps) {
+export default function HUD({ state }: HUDProps) {
   return (
     <div className="fixed inset-0 pointer-events-none z-20 flex flex-col justify-between overflow-hidden">
       {/* 1. Edge-to-Edge Top Command Bar */}
-      <CommandTopBar state={state} mode={mode} onModeChange={onModeChange} />
+      <CommandTopBar state={state} />
 
       {/* 2. Main Desktop / Tablet Landscape Tactical Deck */}
       <main className="relative flex-1 max-w-[1920px] w-full mx-auto px-3 sm:px-4 lg:px-6 pointer-events-none flex items-start justify-between pt-14 pb-10 sm:pt-16 sm:pb-11">
@@ -49,15 +47,11 @@ export default function HUD({ state, mode = "battlefield", onModeChange }: HUDPr
 
       {/* 3. Mobile & Tablet Portrait Cockpit Drawer (< 1024px) */}
       <div className="lg:hidden">
-        <MobileCockpitSheet
-          state={state}
-          mode={mode}
-          onModeChange={onModeChange}
-        />
+        <MobileCockpitSheet state={state} />
       </div>
 
       {/* 4. Bottom Tactical Status Bar */}
-      <TacticalStatusBar state={state} mode={mode} />
+      <TacticalStatusBar state={state} />
     </div>
   );
 }

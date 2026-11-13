@@ -8,45 +8,31 @@ import OrderBook3D from "./components/OrderBook3D";
 import HUD from "./components/HUD";
 import { useBtcAnalytics } from "./hooks/useBtcAnalytics";
 
-type Mode = "battlefield" | "openmaps";
-
-/** Target kamera dan look-at per mode — Battlefield low-pitch, Open Maps bird's-eye. */
-function targetsFor(mode: Mode, aspect: number) {
-  if (mode === "openmaps") {
-    return { position: new Vector3(0, 22, 14), target: new Vector3(0, 0, 0), fov: 54 };
-  }
-  if (aspect < 0.75) {
-    return { position: new Vector3(0, 8, 22), target: new Vector3(0, 1.2, 0), fov: 58 };
-  }
-  if (aspect < 1.3) {
-    return { position: new Vector3(0, 7.2, 19), target: new Vector3(0, 1.2, 0), fov: 50 };
-  }
-  return { position: new Vector3(0, 6.5, 17), target: new Vector3(0, 1.2, 0), fov: 46 };
-}
+/** Kamera bird's-eye default — tampilan Open Maps (macro topography). */
+const CAMERA_TARGET = {
+  position: new Vector3(0, 22, 14),
+  target: new Vector3(0, 0, 0),
+  fov: 54,
+};
 
 /**
- * Transisi kamera sinematik: kamera melerp menuju target mode saat ini.
- * Interpolasi cuma berjalan bila pengguna tidak sedang menggeser orbit,
- * sehingga kontrol manual tetap terasa natural tanpa di-countermand.
+ * Transisi kamera sinematik pada pemuatan awal: kamera melerp ke posisi
+ * bird's-eye selama beberapa detik, lalu kendali penuh diserahkan ke
+ * OrbitControls supaya interaksi manual tetap terasa natural.
  */
 function TacticalCameraRig({
-  mode,
   aspect,
   controlsRef,
 }: {
-  mode: Mode;
   aspect: number;
   controlsRef: React.RefObject<OrbitControlsImpl | null>;
 }) {
   const initialized = useRef(false);
-  // Durasi transisi sinematik yang tersisa (detik). Kamera hanya bergerak
-  // selama jendela ini, lalu kendali penuh kembali ke OrbitControls —
-  // sehingga tidak pernah berkelahi dengan drag manual pengguna.
   const transitionRef = useRef(0);
 
   useEffect(() => {
     transitionRef.current = 1.4;
-  }, [mode, aspect]);
+  }, [aspect]);
 
   useFrame((state, delta) => {
     const cam = state.camera as unknown as {
@@ -55,7 +41,7 @@ function TacticalCameraRig({
       fov: number;
       updateProjectionMatrix: () => void;
     };
-    const goal = targetsFor(mode, aspect);
+    const goal = CAMERA_TARGET;
 
     if (!initialized.current) {
       cam.position.copy(goal.position);
@@ -90,7 +76,6 @@ function TacticalCameraRig({
 }
 
 export default function App() {
-  const [mode, setMode] = useState<Mode>("battlefield");
   const [aspect, setAspect] = useState(() =>
     typeof window === "undefined"
       ? 1.78
@@ -121,7 +106,7 @@ export default function App() {
 
   return (
     <div className="relative w-full h-full bg-zinc-950 select-none">
-      <HUD state={state} mode={mode} onModeChange={setMode} />
+      <HUD state={state} />
 
       {/* 3D Canvas — berada di bawah canvas HUD; panel HUD menghentikan propagasi. */}
       <Canvas
@@ -133,16 +118,15 @@ export default function App() {
         }}
         style={{ position: "fixed", inset: 0, zIndex: 0 }}
       >
-        <PerspectiveCamera makeDefault fov={46} position={[0, 6.5, 17]} />
+        <PerspectiveCamera makeDefault fov={54} position={[0, 22, 14]} />
         <Suspense fallback={null}>
           <OrderBook3D
             bids={bidLevels}
             asks={askLevels}
             directionScore={directionScore}
             delta1m={delta1m}
-            mode={mode}
           />
-          <TacticalCameraRig mode={mode} aspect={aspect} controlsRef={controlsRef} />
+          <TacticalCameraRig aspect={aspect} controlsRef={controlsRef} />
           <OrbitControls
             ref={controlsRef}
             enablePan={false}

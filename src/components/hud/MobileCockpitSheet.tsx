@@ -6,16 +6,13 @@ import DepthLadderPanel from "./DepthLadderPanel";
 
 interface MobileCockpitSheetProps {
   state: AppAnalyticsState;
-  mode: "battlefield" | "openmaps";
-  onModeChange?: (mode: "battlefield" | "openmaps") => void;
 }
 
-type TabKey = "flow" | "book" | "view";
+type TabKey = "flow" | "book";
 
 const TABS: { key: TabKey; label: string; short: string }[] = [
   { key: "flow", label: "Flow Radar", short: "Flow" },
   { key: "book", label: "Order Book", short: "Book" },
-  { key: "view", label: "View & 3D", short: "3D" },
 ];
 
 const fmtPrice = (p: number) =>
@@ -23,8 +20,6 @@ const fmtPrice = (p: number) =>
 
 export default function MobileCockpitSheet({
   state,
-  mode,
-  onModeChange,
 }: MobileCockpitSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("flow");
@@ -90,7 +85,7 @@ export default function MobileCockpitSheet({
         {/* ── Expanded cockpit drawer ─────────────────────────────────── */}
         {isOpen && (
           <div className="px-3 pb-3 pt-0 border-t border-white/[0.07] space-y-2.5 max-h-[52vh] overflow-y-auto">
-            <div className="grid grid-cols-3 gap-1 bg-black/40 p-1 rounded-xl border border-white/[0.06]">
+            <div className="grid grid-cols-2 gap-1 bg-black/40 p-1 rounded-xl border border-white/[0.06]">
               {TABS.map((t) => {
                 const active = activeTab === t.key;
                 return (
@@ -103,9 +98,7 @@ export default function MobileCockpitSheet({
                       active
                         ? t.key === "flow"
                           ? "bg-accent-600 text-white"
-                          : t.key === "book"
-                            ? "bg-bid-600 text-white"
-                            : "bg-violet-600 text-white"
+                          : "bg-bid-600 text-white"
                         : "text-zinc-400 active:text-white"
                     }`}
                   >
@@ -173,65 +166,6 @@ export default function MobileCockpitSheet({
                 levelsToShow={7}
                 className="p-2.5 border-0 bg-transparent shadow-none rounded-xl"
               />
-            )}
-
-            {activeTab === "view" && (
-              <div className="space-y-2.5">
-                {onModeChange && (
-                  <div className="cockpit-card p-2.5 space-y-2">
-                    <span className="text-[9px] uppercase tracking-wider text-zinc-500 block">
-                      Mode Visualisasi Arena 3D
-                    </span>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => onModeChange("battlefield")}
-                        className={`p-2 rounded-lg text-left transition-colors ${
-                          mode === "battlefield"
-                            ? "bg-bid-600/90 text-white"
-                            : "bg-white/5 text-zinc-400"
-                        }`}
-                      >
-                        <div className="text-[11px] font-semibold">⚔️ Battlefield</div>
-                        <div className="text-[9px] opacity-75 mt-0.5">Frontline Clash</div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onModeChange("openmaps")}
-                        className={`p-2 rounded-lg text-left transition-colors ${
-                          mode === "openmaps"
-                            ? "bg-accent-600/90 text-white"
-                            : "bg-white/5 text-zinc-400"
-                        }`}
-                      >
-                        <div className="text-[11px] font-semibold">🗺️ Open Maps</div>
-                        <div className="text-[9px] opacity-75 mt-0.5">Macro Topography</div>
-                      </button>
-                    </div>
-                    <p className="text-[10px] text-zinc-400 leading-snug">
-                      {mode === "battlefield"
-                        ? "Kamera sudut rendah di garis spread — fokus tabrakan bid/ask Level 1-5, OFI, dan kecepatan trade tape."
-                        : "Kamera bird's-eye atas 20 level — sorot whale wall, kontur kedalaman, dan struktur support/resistance."}
-                    </p>
-                  </div>
-                )}
-
-                <div className="cockpit-card p-2.5 space-y-1 text-[11px] font-mono">
-                  <span className="text-[9px] uppercase tracking-wider text-zinc-500 block">
-                    Navigasi Sentuh
-                  </span>
-                  {[
-                    ["1 Jari Geser", "Orbit panggung 3D"],
-                    ["Cubit (Pinch)", "Zoom kedalaman"],
-                    ["2 Jari Geser", "Geser frontline"],
-                  ].map(([k, v]) => (
-                    <div key={k} className="flex justify-between gap-2">
-                      <span className="text-zinc-400">{k}</span>
-                      <span className="text-zinc-200 text-right">{v}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             )}
           </div>
         )}

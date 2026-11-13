@@ -3,13 +3,11 @@ import type { AppAnalyticsState } from "../../hooks/useBtcAnalytics";
 
 interface TacticalStatusBarProps {
   state: AppAnalyticsState;
-  mode: "battlefield" | "openmaps";
   className?: string;
 }
 
 export default function TacticalStatusBar({
   state,
-  mode,
   className = "",
 }: TacticalStatusBarProps) {
   const [utcTime, setUtcTime] = useState(() => new Date().toISOString().slice(11, 19));
@@ -59,17 +57,7 @@ export default function TacticalStatusBar({
             )}
           </div>
 
-          <div className="hidden sm:flex w-px h-4 bg-white/10" />
-
-          <div className="flex items-center gap-1">
-            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-              Mode
-            </span>
-            <span className="text-[10px] font-mono font-medium text-zinc-300 capitalize">
-              {mode}
-            </span>
           </div>
-        </div>
 
         {/* Center: UTC Clock */}
         <div className="flex items-center justify-center">

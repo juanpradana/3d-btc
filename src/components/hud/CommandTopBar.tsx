@@ -2,8 +2,6 @@ import type { AppAnalyticsState } from "../../hooks/useBtcAnalytics";
 
 interface CommandTopBarProps {
   state: AppAnalyticsState;
-  mode: "battlefield" | "openmaps";
-  onModeChange?: (mode: "battlefield" | "openmaps") => void;
 }
 
 const fmtPrice = (p: number) =>
@@ -12,25 +10,7 @@ const fmtPrice = (p: number) =>
 const fmtWholePrice = (p: number) =>
   p > 0 ? p.toLocaleString(undefined, { maximumFractionDigits: 0 }) : "---";
 
-/** Penjelasan fungsi tiap mode — dipakai pada tooltip tombol. */
-const MODE_INFO = {
-  battlefield: {
-    icon: "⚔️",
-    name: "Battlefield",
-    subtitle: "Frontline Clash",
-    tooltip:
-      "Battlefield — Sudut rendah di garis depan spread. Fokus pada tabrakan bid/ask Level 1-5, tekanan OFI, dan kecepatan trade tape. Untuk scalper & eksekusi instan.",
-  },
-  openmaps: {
-    icon: "🗺️",
-    name: "Open Maps",
-    subtitle: "Macro Topography",
-    tooltip:
-      "Open Maps — Sudut tinggi bird's-eye atas seluruh 20 level. Menyorot whale wall, kontur kedalaman kumulatif, dan struktur support/resistance. Untuk swing trader & manajemen risiko.",
-  },
-} as const;
-
-export default function CommandTopBar({ state, mode, onModeChange }: CommandTopBarProps) {
+export default function CommandTopBar({ state }: CommandTopBarProps) {
   const dir = state.direction_score;
   const isBull = dir > 0.15;
   const isBear = dir < -0.15;
@@ -91,41 +71,8 @@ export default function CommandTopBar({ state, mode, onModeChange }: CommandTopB
           ))}
         </div>
 
-        {/* ── Bay 3: Modes, Signal & Health ───────────────────────────── */}
+        {/* ── Bay 3: Signal, Health & Status ─────────────────────────── */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {onModeChange && (
-            <div className="flex bg-black/50 border border-white/[0.08] rounded-xl p-0.5">
-              {(["battlefield", "openmaps"] as const).map((m) => {
-                const info = MODE_INFO[m];
-                const active = mode === m;
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => onModeChange(m)}
-                    title={info.tooltip}
-                    aria-pressed={active}
-                    className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-[9px] text-[11px] font-medium transition-colors ${
-                      active
-                        ? m === "battlefield"
-                          ? "bg-bid-600 text-white"
-                          : "bg-accent-600 text-white"
-                        : "text-zinc-400 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    <span className="text-xs leading-none">{info.icon}</span>
-                    <span className="hidden sm:flex flex-col items-start leading-none">
-                      <span>{info.name}</span>
-                      <span className="hidden xl:block text-[8px] font-normal opacity-70 mt-0.5 uppercase tracking-wider">
-                        {info.subtitle}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
           {state.isSimulated && (
             <div
               className="px-1.5 py-1 rounded-md text-[9px] font-mono font-bold border bg-amber-500/20 border-amber-500/40 text-amber-300"
